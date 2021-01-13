@@ -1,0 +1,67 @@
+version: '3.7'
+
+services:
+  db:
+    image: mariadb:${MARIADB_VERSION:-10.5}
+    container_name: ${MARIADB_HOST:-db}
+    restart: always
+    volumes:
+      - "./.dbdata:/var/lib/mysql"
+    ports:
+      - ${MARIADB_PORT:-3306:3306}
+    environment:
+      - MYSQL_DATABASE=${MARIADB_DATABASE:-counterservice}
+      - MYSQL_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD:-root}
+      - MYSQL_USER=${MARIADB_USER:-develop}
+      - MYSQL_PASSWORD=${MARIADB_PASSWORD:-developpw}
+
+  # counterservice-cms:
+  #   build:
+  #     context: ../counterservice-cms
+  #     dockerfile: Dockerfile
+  #   container_name: counterservice-cms
+  #   restart: always
+  #   volumes:
+  #     - ../counterservice-cms:/usr/src/app
+  #     - /usr/src/app/node_modules
+  #     # - ./config/ssl/ca.crt:/usr/local/share/ca-certificates/ca.crt
+  #   ports:
+  #     - 6002:3000
+  #   networks: 
+  #     - main
+  #   depends_on:
+  #     - redis
+  #     - db
+
+  # redis:
+  #   image: redis:${REDIS_VERSION:-3.2-alpine}
+  #   container_name: ${REDIS_HOST:-redis}
+  #   restart: always
+  #   networks: 
+  #     - main
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: ${PHPMYADMIN_HOST:-phpmyadmin}
+    restart: always
+    environment:
+      - PMA_HOST=db
+    ports:
+      - "8082:80"
+    links:
+      - ${MARIADB_HOST:-db}
+    depends_on:
+      - ${MARIADB_HOST:-db}
+
+
+  # backend:
+  #   build:
+  #     context: ../backend
+  #     dockerfile: Dockerfile.dev
+  #   container_name: backend
+  #   restart: always
+  #   volumes:
+  #     - ../backend:/usr/src/app
+  #     - /usr/src/app/node_modules
+  #   ports:
+  #     - 8000:8000
