@@ -15,24 +15,6 @@ services:
       - MYSQL_USER=${MARIADB_USER:-develop}
       - MYSQL_PASSWORD=${MARIADB_PASSWORD:-developpw}
 
-  # counterservice-cms:
-  #   build:
-  #     context: ../counterservice-cms
-  #     dockerfile: Dockerfile
-  #   container_name: counterservice-cms
-  #   restart: always
-  #   volumes:
-  #     - ../counterservice-cms:/usr/src/app
-  #     - /usr/src/app/node_modules
-  #     # - ./config/ssl/ca.crt:/usr/local/share/ca-certificates/ca.crt
-  #   ports:
-  #     - 6002:3000
-  #   networks: 
-  #     - main
-  #   depends_on:
-  #     - redis
-  #     - db
-
   # redis:
   #   image: redis:${REDIS_VERSION:-3.2-alpine}
   #   container_name: ${REDIS_HOST:-redis}
